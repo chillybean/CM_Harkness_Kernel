@@ -29,8 +29,8 @@
  * It helps to keep variable names smaller, simpler
  */
 
-#define DEF_FREQUENCY_UP_THRESHOLD		(80)
-#define DEF_FREQUENCY_DOWN_THRESHOLD		(20)
+#define DEF_FREQUENCY_UP_THRESHOLD		(64)
+#define DEF_FREQUENCY_DOWN_THRESHOLD		(48)
 #define DEF_FREQUENCY_STEP			(5)
 
 /*
