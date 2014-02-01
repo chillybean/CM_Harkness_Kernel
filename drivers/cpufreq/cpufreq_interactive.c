@@ -399,7 +399,7 @@ static void cpufreq_interactive_timer(unsigned long data)
 
 	pcpu->cpu_load = cpu_load;
 
-	if (cpu_load >= go_hispeed_load || boosted) {
+	if (cpu_load >= go_hispeed_load && !boosted) {
 		if (pcpu->target_freq < hispeed_freq) {
 			new_freq = hispeed_freq;
 		} else {
@@ -611,15 +611,17 @@ static int cpufreq_interactive_speedchange_task(void *data)
 
 static void cpufreq_interactive_boost(void)
 {
-	int i;
+	int i = smp_processor_id();
 	int anyboost = 0;
 	unsigned long flags;
-	struct cpufreq_interactive_cpuinfo *pcpu;
+	struct cpufreq_interactive_cpuinfo *pcpu = &per_cpu(cpuinfo, i);
+
+	if (pcpu->cpu_load < go_hispeed_load)
+		return;
 
 	spin_lock_irqsave(&speedchange_cpumask_lock, flags);
 
 	for_each_online_cpu(i) {
-		pcpu = &per_cpu(cpuinfo, i);
 
 		if (pcpu->target_freq < hispeed_freq) {
 			pcpu->target_freq = hispeed_freq;
