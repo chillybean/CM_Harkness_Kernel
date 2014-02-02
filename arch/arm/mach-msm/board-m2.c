@@ -3536,32 +3536,7 @@ static uint8_t spm_power_collapse_with_rpm_krait_v3[] __initdata = {
 	0x24, 0x30, 0x0f,
 };
 
-static struct msm_spm_seq_entry msm_spm_boot_cpu_seq_list[] __initdata = {
-	[0] = {
-		.mode = MSM_SPM_MODE_CLOCK_GATING,
-		.notify_rpm = false,
-		.cmd = spm_wfi_cmd_sequence,
-	},
-
-	[1] = {
-		.mode = MSM_SPM_MODE_POWER_RETENTION,
-		.notify_rpm = false,
-		.cmd = spm_retention_cmd_sequence,
-	},
-
-	[2] = {
-		.mode = MSM_SPM_MODE_POWER_COLLAPSE,
-		.notify_rpm = false,
-		.cmd = spm_power_collapse_without_rpm,
-	},
-	[3] = {
-		.mode = MSM_SPM_MODE_POWER_COLLAPSE,
-		.notify_rpm = true,
-		.cmd = spm_power_collapse_with_rpm,
-	},
-};
-
-static struct msm_spm_seq_entry msm_spm_nonboot_cpu_seq_list[] __initdata = {
+static struct msm_spm_seq_entry msm_spm_seq_list[] __initdata = {
 	[0] = {
 		.mode = MSM_SPM_MODE_CLOCK_GATING,
 		.notify_rpm = false,
@@ -3600,8 +3575,8 @@ static struct msm_spm_platform_data msm_spm_data[] __initdata = {
 		.reg_init_values[MSM_SPM_REG_SAW2_PMIC_DATA_0] = 0x0084009C,
 		.reg_init_values[MSM_SPM_REG_SAW2_PMIC_DATA_1] = 0x00A4001C,
 		.vctl_timeout_us = 50,
-		.num_modes = ARRAY_SIZE(msm_spm_boot_cpu_seq_list),
-		.modes = msm_spm_boot_cpu_seq_list,
+		.num_modes = ARRAY_SIZE(msm_spm_seq_list),
+		.modes = msm_spm_seq_list,
 	},
 	[1] = {
 		.reg_base_addr = MSM_SAW1_BASE,
@@ -3615,8 +3590,8 @@ static struct msm_spm_platform_data msm_spm_data[] __initdata = {
 		.reg_init_values[MSM_SPM_REG_SAW2_PMIC_DATA_0] = 0x0084009C,
 		.reg_init_values[MSM_SPM_REG_SAW2_PMIC_DATA_1] = 0x00A4001C,
 		.vctl_timeout_us = 50,
-		.num_modes = ARRAY_SIZE(msm_spm_nonboot_cpu_seq_list),
-		.modes = msm_spm_nonboot_cpu_seq_list,
+		.num_modes = ARRAY_SIZE(msm_spm_seq_list),
+		.modes = msm_spm_seq_list,
 	},
 };
 
