@@ -199,7 +199,7 @@ static void max17040_dump_regs(struct i2c_client *client)
 static void max17040_reset(struct i2c_client *client)
 {
 	struct max17040_chip *chip = i2c_get_clientdata(client);
-	u16 reset_cmd = 0x5400;
+	u16 reset_cmd = 0x0054;
 
 	if (is_max17048) {
 		mutex_lock(&chip->mutex);
