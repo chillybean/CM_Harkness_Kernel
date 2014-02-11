@@ -152,7 +152,7 @@ static void led_pwm_config(struct pm8xxx_led_data *led, int time1, int time2) {
 	if (unlikely(led->pwm_duty_cycles->start_idx +
 	    led->pwm_duty_cycles->num_duty_pcts > PM_PWM_LUT_SIZE)) {
 		pr_err("lut too large\n");
-	    	pwm_free(led->pwm_dev);
+		pwm_free(led->pwm_dev);
 		led->pwm_dev = NULL;
 		return;
 	}
@@ -288,11 +288,10 @@ static ssize_t led_pattern_store(struct device *dev,
 		info->color2 = 0xff00;
 		break;
 	case '6':
-		info->color1 = 0x14ca;
 		info->color2 = 0x82ff;
-		info->time1 = 200;
-		info->time2 = 200;
-		info->timetrans = 800;
+		info->time1 = 50;
+		info->time2 = 400;
+		info->timetrans = 250;
 		break;
 	default:
 		info->pattern = 0;
