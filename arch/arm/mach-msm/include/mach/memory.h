@@ -96,7 +96,6 @@ extern void store_ttbr0(void);
 extern void store_ctrl(void);
 extern void store_dac(void);
 #endif
-#define finish_arch_switch(prev)	do { store_ttbr0(); } while (0)
 #endif
 
 #ifdef CONFIG_DONT_MAP_HOLE_AFTER_MEMBANK0
