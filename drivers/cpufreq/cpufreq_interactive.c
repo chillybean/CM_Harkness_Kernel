@@ -665,7 +665,7 @@ static void cpufreq_interactive_boost(void)
 	unsigned long flags;
 	struct cpufreq_interactive_cpuinfo *pcpu = &per_cpu(cpuinfo, i);
 
-	if (pcpu->cpu_load < go_hispeed_load)
+	if (pcpu->prev_load < go_hispeed_load)
 		return;
 
 	spin_lock_irqsave(&speedchange_cpumask_lock, flags);
