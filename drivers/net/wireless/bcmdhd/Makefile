@@ -6,12 +6,11 @@
 DHDCFLAGS = -Wall -Wstrict-prototypes -Dlinux -DLINUX -DBCMDRIVER             \
         -DBCMDONGLEHOST -DUNRELEASEDCHIP -DBCMDMA32 -DBCMFILEIMAGE            \
         -DDHDTHREAD -DBDC -DOOB_INTR_ONLY                                     \
-        -DDHD_BCMEVENTS -DSHOW_EVENTS                                \
+        -DDHD_BCMEVENTS -DSHOW_EVENTS -DBCMDBG                                \
         -DMMC_SDIO_ABORT -DBCMSDIO -DBCMLXSDMMC -DBCMPLATFORM_BUS -DWLP2P     \
         -DWIFI_ACT_FRAME -DARP_OFFLOAD_SUPPORT          \
         -DKEEP_ALIVE -DCSCAN -DPKT_FILTER_SUPPORT                             \
         -DEMBEDDED_PLATFORM -DPNO_SUPPORT
-#DHDCFLAGS += -DENABLE_CRAP
 
 #################
 # Common feature
@@ -36,8 +35,6 @@ DHDCFLAGS += -DPASS_ALL_MCAST_PKTS
 
 # Early suspend
 DHDCFLAGS += -DDHD_USE_EARLYSUSPEND
-
-DHDCFLAGS += -DSUPPORT_PM2_ONLY
 
 # For Scan result patch
 DHDCFLAGS += -DESCAN_RESULT_PATCH
@@ -109,7 +106,7 @@ DRIVER_TYPE ?= m
 
 ifneq ($(CONFIG_BCM4334),)
   DHDCFLAGS += -DBCM4334_CHIP -DHW_OOB -DSUPPORT_MULTIPLE_REVISION
-  DHDCFLAGS += -DUSE_CID_CHECK -DCONFIG_CONTROL_PM
+  DHDCFLAGS += -DUSE_CID_CHECK
   DHDCFLAGS += -DPROP_TXSTATUS -DPROP_TXSTATUS_VSDB
   DHDCFLAGS += -DVSDB -DHT40_GO
   DHDCFLAGS += -DWL_CFG80211_VSDB_PRIORITIZE_SCAN_REQUEST
@@ -208,10 +205,9 @@ DHDCFLAGS += -include "dhd_sec_feature.h"
 
 #EXTRA_LDFLAGS += --strip-debug
 
-EXTRA_CFLAGS += $(DHDCFLAGS)
+EXTRA_CFLAGS += $(DHDCFLAGS) -DDHD_DEBUG
 EXTRA_CFLAGS += -DSRCBASE=\"$(src)\"
 EXTRA_CFLAGS += -I$(src)/include/ -I$(src)/
-EXTRA_CFLAGS += -fno-ipa-matrix-reorg -fno-ipa-pta
 KBUILD_CFLAGS += -I$(LINUXDIR)/include -I$(shell pwd)
 
 DHDOFILES := bcmsdh.o bcmsdh_linux.o bcmsdh_sdmmc.o bcmsdh_sdmmc_linux.o \
