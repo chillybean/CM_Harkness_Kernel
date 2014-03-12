@@ -45,8 +45,10 @@ else
             echo "Packaging..."
             cd out
             cdate=`date "+%Y-%m-%d"`
-            zip -r Harkness-kernel-d2-$cdate.zip .
+            zfile=Harkness-kernel-d2-$cdate.zip
+            zip -r $zfile .
             cd ..
+            echo "ZIPFILE:  out/$zfile"
         else
             echo "Something went wrong. zImage not found."
         fi
