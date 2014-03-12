@@ -29,6 +29,7 @@
 #include "pm.h"
 #include "scm-boot.h"
 #include "spm.h"
+#include "core.h"
 
 #define VDD_SC1_ARRAY_CLAMP_GFS_CTL 0x15A0
 #define SCSS_CPU1CORE_RESET 0xD80
@@ -47,7 +48,7 @@ volatile int pen_release = -1;
  * observers, irrespective of whether they're taking part in coherency
  * or not.  This is necessary for the hotplug code to work reliably.
  */
-static void __cpuinit write_pen_release(int val)
+static void write_pen_release(int val)
 {
 	pen_release = val;
 	smp_wmb();
@@ -57,7 +58,7 @@ static void __cpuinit write_pen_release(int val)
 
 static DEFINE_SPINLOCK(boot_lock);
 
-void __cpuinit platform_secondary_init(unsigned int cpu)
+static void msm_secondary_init(unsigned int cpu)
 {
 	WARN_ON(msm_platform_secondary_init(cpu));
 
@@ -81,7 +82,7 @@ void __cpuinit platform_secondary_init(unsigned int cpu)
 	spin_unlock(&boot_lock);
 }
 
-static int __cpuinit scorpion_release_secondary(void)
+static int scorpion_release_secondary(void)
 {
 	void *base_ptr = ioremap_nocache(0x00902000, SZ_4K*2);
 	if (!base_ptr)
@@ -97,7 +98,7 @@ static int __cpuinit scorpion_release_secondary(void)
 	return 0;
 }
 
-static int __cpuinit krait_release_secondary_sim(unsigned long base, int cpu)
+static int krait_release_secondary_sim(unsigned long base, int cpu)
 {
 	void *base_ptr = ioremap_nocache(base + (cpu * 0x10000), SZ_4K);
 	if (!base_ptr)
@@ -113,7 +114,7 @@ static int __cpuinit krait_release_secondary_sim(unsigned long base, int cpu)
 	return 0;
 }
 
-static int __cpuinit krait_release_secondary(unsigned long base, int cpu)
+static int krait_release_secondary(unsigned long base, int cpu)
 {
 	void *base_ptr = ioremap_nocache(base + (cpu * 0x10000), SZ_4K);
 	if (!base_ptr)
@@ -144,7 +145,7 @@ static int __cpuinit krait_release_secondary(unsigned long base, int cpu)
 	return 0;
 }
 
-static int __cpuinit krait_release_secondary_p3(unsigned long base, int cpu)
+static int krait_release_secondary_p3(unsigned long base, int cpu)
 {
 	void *base_ptr = ioremap_nocache(base + (cpu * 0x10000), SZ_4K);
 	if (!base_ptr)
@@ -169,7 +170,7 @@ static int __cpuinit krait_release_secondary_p3(unsigned long base, int cpu)
 	return 0;
 }
 
-static int __cpuinit release_secondary(unsigned int cpu)
+static int release_secondary(unsigned int cpu)
 {
 	BUG_ON(cpu >= get_core_count());
 
@@ -198,7 +199,7 @@ static int cold_boot_flags[] = {
 	SCM_FLAG_COLDBOOT_CPU3,
 };
 
-int __cpuinit boot_secondary(unsigned int cpu, struct task_struct *idle)
+static int msm_boot_secondary(unsigned int cpu, struct task_struct *idle)
 {
 	int ret;
 	unsigned int flag = 0;
@@ -269,7 +270,7 @@ int __cpuinit boot_secondary(unsigned int cpu, struct task_struct *idle)
  * Initialise the CPU possible map early - this describes the CPUs
  * which may be present or become present in the system.
  */
-void __init smp_init_cpus(void)
+static void __init msm_smp_init_cpus(void)
 {
 	unsigned int i, ncores = get_core_count();
 
@@ -285,6 +286,16 @@ void __init smp_init_cpus(void)
 	set_smp_cross_call(gic_raise_softirq);
 }
 
-void __init platform_smp_prepare_cpus(unsigned int max_cpus)
+static void __init msm_smp_prepare_cpus(unsigned int max_cpus)
 {
 }
+
+struct smp_operations msm_smp_ops __initdata = {
+	.smp_init_cpus		= msm_smp_init_cpus,
+	.smp_prepare_cpus	= msm_smp_prepare_cpus,
+	.smp_secondary_init	= msm_secondary_init,
+	.smp_boot_secondary	= msm_boot_secondary,
+#ifdef CONFIG_HOTPLUG_CPU
+	.cpu_die		= msm_cpu_die,
+#endif
+};

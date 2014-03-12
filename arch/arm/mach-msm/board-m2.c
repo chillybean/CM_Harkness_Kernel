@@ -149,6 +149,7 @@
 #include "devices-msm8x60.h"
 #include "spm.h"
 #include "board-8960.h"
+#include "core.h"
 #include "pm.h"
 #include <mach/cpuidle.h>
 #include "rpm_resources.h"
@@ -5382,6 +5383,7 @@ static void __init samsung_m2_init(void)
 }
 
 MACHINE_START(M2, "SAMSUNG M2")
+	.smp = smp_ops(msm_smp_ops),
 	.map_io = msm8960_map_io,
 	.reserve = msm8960_reserve,
 	.init_irq = msm8960_init_irq,
