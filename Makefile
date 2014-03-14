@@ -355,11 +355,11 @@ CC		= $(srctree)/scripts/gcc-wrapper.py $(REAL_CC)
 
 CHECKFLAGS     := -D__linux__ -Dlinux -D__STDC__ -Dunix -D__unix__ \
 		  -Wbitwise -Wno-return-void $(CF)
-MODFLAGS	= -DMODULE -mcpu=cortex-a15 -mtune=cortex-a15 -mfpu=neon-vfpv4 -mvectorize-with-neon-quad
+MODFLAGS	= -DMODULE -fgraphite-identity -floop-parallelize-all -floop-interchange -floop-strip-mine -floop-block
 CFLAGS_MODULE   = $(MODFLAGS)
 AFLAGS_MODULE   = $(MODFLAGS)
 LDFLAGS_MODULE  = -T $(srctree)/scripts/module-common.lds
-CFLAGS_KERNEL	= -mcpu=cortex-a15 -mtune=cortex-a15 -mfpu=neon-vfpv4 -mvectorize-with-neon-quad
+CFLAGS_KERNEL	= -fgraphite-identity -floop-parallelize-all -floop-interchange -floop-strip-mine -floop-block
 AFLAGS_KERNEL	=
 CFLAGS_GCOV	= -fprofile-arcs -ftest-coverage
 
