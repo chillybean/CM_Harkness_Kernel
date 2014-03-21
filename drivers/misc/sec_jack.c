@@ -600,7 +600,7 @@ static int sec_jack_probe(struct platform_device *pdev)
 	 * 2000ms delay is enough to waiting for adc driver registration.
 	 */
 	INIT_DELAYED_WORK(&hi->powerup_work, sec_jack_powerup_work_func);
-	schedule_delayed_work(&hi->powerup_work, msecs_to_jiffies(2000));
+	queue_delayed_work(system_power_efficient_wq, &hi->powerup_work, msecs_to_jiffies(2000));
 
 	return 0;
 
