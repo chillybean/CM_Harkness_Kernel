@@ -80,11 +80,3 @@ config BRCM_CCX
 	default n
 	---help---
 		Enable Cisco Compatible eXtenstion
-
-config BCMDHD_WIFI_PM
-	bool "Enable support for changing the WiFi power mode"
-	depends on BCMDHD || BCM4334
-	default n
-	help
-	  Enable support for changing the WiFi power mode for
-	  screen-off.
